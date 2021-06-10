@@ -1,4 +1,9 @@
-import {ApolloClient, InMemoryCache, makeVar} from "@apollo/client";
+import {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+  makeVar,
+} from "@apollo/client";
 
 const TOKEN = "TOKEN";
 const DARK_MODE = "DARK_MODE";
@@ -14,7 +19,9 @@ export const logUserOut: any = () => {
   window.location.reload();
 };
 
-export const darkModeVar: any = makeVar(Boolean(localStorage.getItem(DARK_MODE)));
+export const darkModeVar: any = makeVar(
+  Boolean(localStorage.getItem(DARK_MODE))
+);
 export const enableDarkMode = () => {
   localStorage.setItem(DARK_MODE, "enabled");
   darkModeVar(true);
@@ -25,8 +32,12 @@ export const disableDarkMode = () => {
   darkModeVar(false);
 };
 
+const httpLink = createHttpLink({
+  uri: "http://localhost:4000/graphql/",
+});
 
 export const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  ssrMode: true,
+  link: httpLink,
   cache: new InMemoryCache(),
 });

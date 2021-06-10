@@ -40,7 +40,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
     $name: String!
     $location: String
     $password: String!
-    # $avatarURL: Upload
+    $avatarURL: Upload
     $githubUsername: String
   ) {
     createAccount(
@@ -49,7 +49,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
       name: $name
       location: $location
       password: $password
-      # avatarURL: $avatarURL
+      avatarURL: $avatarURL
       githubUsername: $githubUsername
     ) {
       ok
@@ -61,7 +61,15 @@ const CREATE_ACCOUNT_MUTATION = gql`
 const SignUp = () => {
   const history = useHistory();
   const onCompleted = (data: any) => {
-    const { username, password } = getValues();
+    const {
+      username,
+      password,
+      name,
+      email,
+      location,
+      avatarURL,
+      githubUsername,
+    } = getValues();
     const {
       createAccount: { ok, error },
     } = data;
@@ -83,12 +91,20 @@ const SignUp = () => {
     mode: "onChange",
   });
   const onSubmitValid = (data: any) => {
+    console.log("@@@@@@@@@@@@@@@@@@@");
+    console.log(data);
+    console.log({
+      ...data,
+      avatarURL: data.avatarURL[0],
+    });
     if (loading) {
       return;
     }
+
     createAccount({
       variables: {
         ...data,
+        avatarURL: data.avatarURL[0],
       },
     });
   };
@@ -147,9 +163,24 @@ const SignUp = () => {
           />
           <FormError message={errors?.email?.message} />
 
-          <Input ref={register} name="location" type="text" placeholder="주소" />
-          <Input ref={register} name="avatarURL" type="text" placeholder="프로필사진" />
-          <Input ref={register} name="githubUsername" type="text" placeholder="깃허브 사용자 이름" />
+          <Input
+            ref={register}
+            name="location"
+            type="text"
+            placeholder="주소"
+          />
+          <Input
+            ref={register}
+            name="avatarURL"
+            type="file"
+            placeholder="프로필사진"
+          />
+          <Input
+            ref={register}
+            name="githubUsername"
+            type="text"
+            placeholder="깃허브 사용자 이름"
+          />
           <Button
             type="submit"
             value={loading ? "Loading..." : "Sign up"}
@@ -167,6 +198,29 @@ const SignUp = () => {
         linkText="로그인"
         link={routes.home}
       />
+      {/* <Mutation mutation={UPLOAD_FILE_STREAM}>
+        {(singleUploadStream, { data, loading }) => {
+          console.log(data);
+          return (
+            <form
+              onSubmit={() => {
+                console.log("Submitted");
+              }}
+              encType={"multipart/form-data"}
+            >
+              <input
+                name={"document"}
+                type={"file"}
+                onChange={({ target: { files } }) => {
+                  const file = files[0];
+                  file && singleUploadStream({ variables: { file: file } });
+                }}
+              />
+              {loading && <p>Loading.....</p>}
+            </form>
+          );
+        }}
+      </Mutation> */}
     </AuthLayout>
   );
 };

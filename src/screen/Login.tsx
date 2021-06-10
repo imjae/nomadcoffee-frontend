@@ -12,6 +12,7 @@ import FormError from "../components/auth/FormError";
 import Input from "../components/auth/Input";
 import Separator from "../components/auth/Separator";
 import PageTitle from "../components/PageTitle";
+import { FatLink } from "../components/shared";
 import routes from "../routes";
 
 interface LocationState {
@@ -20,6 +21,18 @@ interface LocationState {
   password: any;
   result: any;
 }
+
+const HeaderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Subtitle = styled(FatLink)`
+  font-size: 16px;
+  text-align: center;
+  margin-top: 10px;
+`;
 
 const Notification = styled.div`
   color: #2ecc71;
@@ -98,9 +111,13 @@ const Login = () => {
     <AuthLayout>
       <PageTitle title="Login" />
       <FormBox>
+        <HeaderContainer>
+          <Subtitle>NOMAD COFFEE</Subtitle>
+        </HeaderContainer>
         <Notification> {location?.state?.message} </Notification>
         <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
-          <Input ref={register({
+          <Input
+            ref={register({
               required: "사용자 이름을 작성해 주세요.",
               minLength: {
                 value: 5,
